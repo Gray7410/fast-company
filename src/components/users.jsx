@@ -3,15 +3,11 @@ import api from "../api";
 
 const Users = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
-  const [count, setCount] = useState(api.users.fetchAll().length);
+  const [count, setCount] = useState(users.length);
 
   const handleDelete = (id) => {
     userDecrement();
-    setUsers((prevState) =>
-      prevState.filter((user) => {
-        return user !== id;
-      })
-    );
+    setUsers((prevState) => prevState.filter((user) => user._id !== id));
   };
 
   const userDecrement = () => {
@@ -20,14 +16,18 @@ const Users = () => {
 
   const renderUser = () => {
     return users.map((user) => (
-      <tr id={user._id}>
+      <tr key={user._id}>
         <td>{user.name}</td>
         <td>{renderQualities(user.qualities)}</td>
         <td>{user.profession.name}</td>
         <td>{user.completedMeetings}</td>
         <td>{user.rate}/5</td>
         <td>
-          <button className="btn btn-danger" onClick={() => handleDelete(user)}>
+          <button
+            className="btn btn-danger"
+            key={user._id}
+            onClick={() => handleDelete(user._id)}
+          >
             delete
           </button>
         </td>
@@ -37,7 +37,7 @@ const Users = () => {
 
   const renderQualities = (qualities) => {
     return qualities.map((quality) => (
-      <span className={getBadgeClasses(quality)} id={quality._id}>
+      <span className={getBadgeClasses(quality)} key={quality._id}>
         {quality.name}
       </span>
     ));
@@ -57,7 +57,7 @@ const Users = () => {
   };
 
   const renderTable = () => {
-    return count !== 0 ? (
+    return count ? (
       <table className="table">
         <thead>
           <tr>
