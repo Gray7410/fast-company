@@ -20,6 +20,9 @@ const User = (props) => {
       <td>{completedMeetings}</td>
       <td>{rate}/5</td>
       <td>
+        <BookMark />
+      </td>
+      <td>
         {
           <button
             className="btn btn-danger"

@@ -5,7 +5,7 @@ const UsersList = (props) => {
   const { users, onDelete } = props;
 
   return (
-    <>
+    users.length > 0 && (
       <table className="table">
         <thead>
           <tr>
@@ -14,6 +14,7 @@ const UsersList = (props) => {
             <th scope="col">Профессия</th>
             <th scope="col">Встретился, раз</th>
             <th scope="col">Оценка</th>
+            <th scope="col">Избранное</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -23,7 +24,7 @@ const UsersList = (props) => {
           ))}
         </tbody>
       </table>
-    </>
+    )
   );
 };
 
