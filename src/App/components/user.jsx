@@ -4,7 +4,7 @@ import BookMark from "./bookmark";
 
 const User = (props) => {
   const {
-    _id,
+    _id: id,
     name,
     qualities,
     profession,
@@ -13,7 +13,7 @@ const User = (props) => {
     onDelete,
   } = props;
   return (
-    <tr key={_id}>
+    <tr key={id}>
       <td>{name}</td>
       <td>{Qualitie(qualities)}</td>
       <td>{profession.name}</td>
@@ -26,8 +26,8 @@ const User = (props) => {
         {
           <button
             className="btn btn-danger"
-            key={_id}
-            onClick={() => onDelete(_id)}
+            key={id}
+            onClick={() => onDelete(id)}
           >
             Удалить
           </button>

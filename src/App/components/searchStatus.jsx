@@ -11,10 +11,8 @@ const SearchStatus = (props) => {
   };
   return (
     <h2>
-      <span
-        className={"badge " + (users.length > 0 ? "bg-primary" : "bg-danger")}
-      >
-        {users.length > 0
+      <span className={"badge " + (users.length ? "bg-primary" : "bg-danger")}>
+        {users.length
           ? `${users.length + " " + renderPhrase(users.length)} с тобой сегодня`
           : "Никто с тобой не тусанет"}
       </span>
