@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const Qualitie = (qualities) => {
     const getBadgeClasses = (quality) => {
@@ -11,6 +12,9 @@ const Qualitie = (qualities) => {
             {quality.name}
         </span>
     ));
+};
+Qualitie.propTypes = {
+    qualities: PropTypes.array.isRequired
 };
 
 export default Qualitie;

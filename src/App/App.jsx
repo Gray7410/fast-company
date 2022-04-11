@@ -12,8 +12,8 @@ function App() {
 
     return (
         <>
-            <SearchStatus users={[...users]} />
-            <UsersList onDelete={handleDelete} users={[...users]} />
+            <SearchStatus users={users} />
+            <UsersList onDelete={handleDelete} users={users} />
         </>
     );
 }
