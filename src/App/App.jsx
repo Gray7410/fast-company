@@ -16,7 +16,6 @@ function App() {
     const handleDelete = (id) => {
         setUsers(users.filter((user) => user._id !== id));
     };
-    console.log(users === []);
     return (
         <>
             {loader ? (
