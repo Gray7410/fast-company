@@ -12,13 +12,14 @@ const UsersList = ({ users: allUsers, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState(api.professions.fetchAll());
     const [selectedProf, setSelectedProf] = useState();
+    const [profLoading, setProfLoading] = useState(true);
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
     useEffect(() => {
         api.professions.fetchAll().then((data) => {
-            console.log("data", data);
             setProfessions(data);
+            setProfLoading(false);
         });
     }, []);
     useEffect(() => {
@@ -39,19 +40,18 @@ const UsersList = ({ users: allUsers, onDelete }) => {
     };
     return (
         <div className="d-flex">
-            {professions && (
+            {professions && profLoading ? (
+                <div className="alert alert-primary" role="alert">
+                    Загрузка...
+                </div>
+            ) : (
                 <div className="d-flex flex-column flex-shrink-0 p-3">
                     <GroupList
                         selectedItem={selectedProf}
                         items={professions}
                         onItemSelect={handleProfessionSelect}
+                        onClickClear={clearFilter}
                     />
-                    <button
-                        className="btn btn-secondary mt-2"
-                        onClick={clearFilter}
-                    >
-                        Очистить фильтр
-                    </button>
                 </div>
             )}
             <div className="d-flex flex-column flex-grow-1 p-3">
