@@ -35,9 +35,16 @@ const UsersList = ({ users: allUsers, onDelete }) => {
     const count = filteredUsers.length;
 
     const userCrop = paginate(filteredUsers, currentPage, pageSize);
+    useEffect(() => {
+        if (!userCrop.length && filteredUsers) {
+            setCurrentPage((page) => page - 1);
+        }
+    }, [onDelete]);
+
     const clearFilter = () => {
         setSelectedProf();
     };
+
     return (
         <div className="d-flex">
             {professions && profLoading ? (
