@@ -30,8 +30,9 @@ const UsersList = ({ users: allUsers, onDelete }) => {
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
     };
+
     const handleSort = (item) => {
-        setSortBy({ iter: item, order: "asc" });
+        setSortBy(item);
     };
 
     const filteredUsers = selectedProf
@@ -73,6 +74,7 @@ const UsersList = ({ users: allUsers, onDelete }) => {
                         users={userCrop}
                         onDelete={onDelete}
                         onSort={handleSort}
+                        selectedSort={sortBy}
                     />
                 )}
                 <div className="d-flex justify-content-center">
