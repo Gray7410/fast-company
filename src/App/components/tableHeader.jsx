@@ -18,6 +18,15 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
                 {Object.keys(columns).map((column) => (
                     <th
                         key={column}
+                        className={
+                            columns[column].path === selectedSort.path &&
+                            selectedSort.order === "asc"
+                                ? "bi bi-caret-down-fill"
+                                : columns[column].path === selectedSort.path &&
+                                  selectedSort.order === "desc"
+                                ? "bi bi-caret-up-fill"
+                                : ""
+                        }
                         onClick={
                             columns[column].path
                                 ? () => handleSort(columns[column].path)

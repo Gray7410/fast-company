@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./pagination";
-import PropTypes from "prop-types";
 import { paginate } from "../utils/paginate";
 import GroupList from "./groupList";
 import api from "../api";
@@ -14,7 +13,7 @@ const UsersList = () => {
     const [professions, setProfessions] = useState(api.professions.fetchAll());
     const [selectedProf, setSelectedProf] = useState();
     const [profLoading, setProfLoading] = useState(true);
-    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
 
     const [users, setUsers] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -114,10 +113,6 @@ const UsersList = () => {
             )}
         </>
     );
-};
-UsersList.propTypes = {
-    users: PropTypes.array.isRequired,
-    onDelete: PropTypes.func.isRequired
 };
 
 export default UsersList;
