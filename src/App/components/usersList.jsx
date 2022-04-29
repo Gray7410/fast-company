@@ -25,6 +25,17 @@ const UsersList = () => {
         });
     }, []);
 
+    const handleToggleBookMark = (id) => {
+        setUsers(
+            users.map((user) => {
+                if (user._id === id) {
+                    return { ...user, bookmark: !user.bookmark };
+                }
+                return user;
+            })
+        );
+    };
+
     const handleDelete = (id) => {
         setUsers(users.filter((user) => user._id !== id));
     };
@@ -92,10 +103,11 @@ const UsersList = () => {
                             users={count}
                             selectedProf={selectedProf}
                         />
-                        {count && (
+                        {count > 0 && (
                             <UserTable
                                 users={userCrop}
                                 onDelete={handleDelete}
+                                onToggleBookMark={handleToggleBookMark}
                                 onSort={handleSort}
                                 selectedSort={sortBy}
                             />

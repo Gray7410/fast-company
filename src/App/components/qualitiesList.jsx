@@ -1,7 +1,13 @@
-import Qualitie from "./qualitie";
+import Quality from "./quality";
 
 const QualitiesList = ({ qualities }) => {
-    return Qualitie(qualities);
+    return (
+        <>
+            {qualities.map((qual) => (
+                <Quality key={qual._id} {...qual} />
+            ))}
+        </>
+    );
 };
 
 export default QualitiesList;
