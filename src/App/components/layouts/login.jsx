@@ -15,6 +15,9 @@ const Login = () => {
         email: {
             isRequired: {
                 message: `Электронная почта обязательна для заполнения`
+            },
+            isEmail: {
+                message: `Email введен не корректно`
             }
         },
         password: {
