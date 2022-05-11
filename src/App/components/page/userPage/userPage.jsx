@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
-import QualitiesList from "./qualitiesList";
+import Qualities from "../../ui/qualities";
 
 const User = ({ users, id }) => {
     const history = useHistory();
@@ -16,7 +16,7 @@ const User = ({ users, id }) => {
                 <>
                     <h2>{user.name}</h2>
                     <h3>Профессия: {user.profession.name}</h3>
-                    <QualitiesList qualities={user.qualities} />
+                    <Qualities qualities={user.qualities} />
                     <p>Встретился {user.completedMeetings} раз</p>
                     <h4>Оценка - {user.rate} / 5</h4>
                     <button onClick={() => handleUsers()}>
