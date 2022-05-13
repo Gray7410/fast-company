@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
-import { paginate } from "../utils/paginate";
-import GroupList from "./groupList";
-import api from "../api";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import Pagination from "../../common/pagination";
+import { paginate } from "../../../utils/paginate";
+import GroupList from "../../common/groupList";
+import api from "../../../api";
+import SearchStatus from "../../ui/searchStatus";
+import UserTable from "../../ui/usersTable";
 import _ from "lodash";
+import SearchField from "../../searchField";
 
-const UsersList = () => {
+const UsersListPage = () => {
     const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState(api.professions.fetchAll());
     const [selectedProf, setSelectedProf] = useState();
     const [profLoading, setProfLoading] = useState(true);
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-
     const [users, setUsers] = useState([]);
     const [loader, setLoader] = useState(true);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         api.users.fetchAll().then((users) => {
@@ -54,6 +55,7 @@ const UsersList = () => {
     }, [selectedProf]);
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        setSearch("");
     };
 
     const handleSort = (item) => {
@@ -62,7 +64,9 @@ const UsersList = () => {
 
     const filteredUsers = selectedProf
         ? users.filter((user) => user.profession._id === selectedProf._id)
-        : users;
+        : users.filter((user) =>
+              user.name.toLowerCase().includes(search.toLowerCase())
+          );
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
@@ -73,6 +77,11 @@ const UsersList = () => {
     }, [handleDelete]);
 
     const clearFilter = () => {
+        setSelectedProf();
+    };
+
+    const handleSearch = ({ target }) => {
+        setSearch(target.value);
         setSelectedProf();
     };
 
@@ -103,6 +112,7 @@ const UsersList = () => {
                             users={count}
                             selectedProf={selectedProf}
                         />
+                        <SearchField value={search} onChange={handleSearch} />
                         {count > 0 && (
                             <UserTable
                                 users={userCrop}
@@ -127,4 +137,4 @@ const UsersList = () => {
     );
 };
 
-export default UsersList;
+export default UsersListPage;
