@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
+import api from "../../api";
+import SelectField from "../common/form/selectField";
+import RadioField from "../common/form/radioField";
 
 const RegisterForm = () => {
-    const [data, setData] = useState({ email: "", password: "" });
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+        profession: "",
+        sex: "male"
+    });
     const [errors, setErrors] = useState({});
+    const [professions, setProfessions] = useState(api.professions.fetchAll());
+    useEffect(() => {
+        api.professions.fetchAll().then((data) => {
+            setProfessions(data);
+        });
+    }, []);
     const handleChange = ({ target }) => {
         setData((prevState) => ({
             ...prevState,
@@ -33,6 +47,11 @@ const RegisterForm = () => {
             min: {
                 message: `Пароль должен состоять минимум из 8 символов`,
                 value: 8
+            }
+        },
+        profession: {
+            isRequired: {
+                message: `Указание профессии обязательно`
             }
         }
     };
@@ -68,6 +87,24 @@ const RegisterForm = () => {
                 value={data.password}
                 onChange={handleChange}
                 error={errors.password}
+            />
+            <SelectField
+                label="Профессия"
+                defaultOption="Выберите профессию"
+                options={professions}
+                onChange={handleChange}
+                value={data.profession}
+                error={errors.profession}
+            />
+            <RadioField
+                options={[
+                    { name: "Мужской", value: "male" },
+                    { name: "Женский", value: "female" },
+                    { name: "Другой", value: "other" }
+                ]}
+                value={data.sex}
+                name="sex"
+                onChange={handleChange}
             />
             <button
                 disabled={!isValid}
