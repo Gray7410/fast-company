@@ -88,8 +88,10 @@ const UsersListPage = () => {
     return (
         <>
             {loader ? (
-                <div className="alert alert-primary" role="alert">
-                    Загрузка...
+                <div className="position-absolute top-50 start-50 translate-middle">
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Загрузка...</span>
+                    </div>
                 </div>
             ) : (
                 <div className="d-flex">
