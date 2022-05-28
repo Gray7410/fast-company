@@ -7,6 +7,7 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import PropTypes from "prop-types";
+import BackButton from "../../common/table/backButton";
 
 const EditUserPage = () => {
     const history = useHistory();
@@ -158,6 +159,7 @@ const EditUserPage = () => {
                 <div className="container mt-5">
                     <div className="row">
                         <div className="col-md-6 offset-md-3 p-4">
+                            <BackButton />
                             <h3 className="mb-4">Редактирование профиля</h3>
                             <form onSubmit={handleSubmit}>
                                 <TextField

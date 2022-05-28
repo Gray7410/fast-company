@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 
 const MeetingsCard = ({ value }) => {
     return (
-        <div class="card mb-3">
-            <div class="card-body d-flex flex-column justify-content-center text-center">
-                <h5 class="card-title">
+        <div className="card mb-3">
+            <div className="card-body d-flex flex-column justify-content-center text-center">
+                <h5 className="card-title">
                     <span>Встречи</span>
                 </h5>
-                <h1 class="display-1">{value}</h1>
+                <h1 className="display-1">{value}</h1>
             </div>
         </div>
     );
