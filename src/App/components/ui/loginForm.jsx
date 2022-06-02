@@ -55,7 +55,7 @@ const LoginForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
-        if (!isValid) return;
+        if (!isValid) return null;
     };
     return (
         <form onSubmit={handleSubmit}>

@@ -4,7 +4,7 @@ export function validator(data, config) {
         let statusValidate;
         switch (validateMethod) {
             case "isRequired": {
-                if (typeof data === "boolean" || typeof data === "object") {
+                if (typeof data === "boolean") {
                     statusValidate = !data;
                 } else {
                     statusValidate = data.trim() === "";
