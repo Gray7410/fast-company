@@ -30,10 +30,10 @@ const UserProvider = ({ children }) => {
         } catch (error) {
             errorCatcher(error);
         }
-        function errorCatcher(error) {
-            const { message } = error.response.data;
-            setError(message);
-        }
+    }
+    function errorCatcher(error) {
+        const { message } = error.response.data;
+        setError(message);
     }
     return (
         <UserContext.Provider value={{ users }}>

@@ -20,7 +20,6 @@ const UsersListPage = () => {
     const [search, setSearch] = useState("");
 
     const { users } = useUser();
-    console.log(users);
 
     const handleToggleBookMark = (id) => {
         // setUsers(
