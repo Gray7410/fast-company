@@ -8,9 +8,8 @@ const Quality = ({ id }) => {
     const qual = id.map((qualId) => {
         return getQuality(qualId);
     });
-    if (!isLoading) {
-        return <Qualities qualities={qual} />;
-    } else return "Loading...";
+    if (!isLoading) return <Qualities qualities={qual} />;
+    return "Loading...";
 };
 Quality.propTypes = {
     id: PropTypes.array

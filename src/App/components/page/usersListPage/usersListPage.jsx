@@ -16,25 +16,15 @@ const UsersListPage = () => {
     const [selectedProf, setSelectedProf] = useState();
     const [profLoading, setProfLoading] = useState(true);
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-    // const [loader, setLoader] = useState(true);
     const [search, setSearch] = useState("");
 
     const { users } = useUser();
 
     const handleToggleBookMark = (id) => {
-        // setUsers(
-        //     users.map((user) => {
-        //         if (user._id === id) {
-        //             return { ...user, bookmark: !user.bookmark };
-        //         }
-        //         return user;
-        //     })
-        // );
         console.log(id);
     };
 
     const handleDelete = (id) => {
-        // setUsers(users.filter((user) => user._id !== id));
         console.log(id);
     };
 
@@ -84,13 +74,6 @@ const UsersListPage = () => {
 
     return (
         <>
-            {/* {loader ? (
-                <div className="position-absolute top-50 start-50 translate-middle">
-                    <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Загрузка...</span>
-                    </div>
-                </div>
-            ) : ( */}
             <div className="d-flex">
                 {professions && profLoading ? (
                     <div className="alert alert-primary" role="alert">
@@ -128,7 +111,6 @@ const UsersListPage = () => {
                     </div>
                 </div>
             </div>
-            {/* )} */}
         </>
     );
 };
