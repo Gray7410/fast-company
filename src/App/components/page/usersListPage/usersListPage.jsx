@@ -7,6 +7,7 @@ import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchField from "../../searchField";
+import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage = () => {
     const pageSize = 8;
@@ -15,30 +16,16 @@ const UsersListPage = () => {
     const [selectedProf, setSelectedProf] = useState();
     const [profLoading, setProfLoading] = useState(true);
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-    const [users, setUsers] = useState([]);
-    const [loader, setLoader] = useState(true);
     const [search, setSearch] = useState("");
 
-    useEffect(() => {
-        api.users.fetchAll().then((users) => {
-            setUsers(users);
-            setLoader(false);
-        });
-    }, []);
+    const { users } = useUser();
 
     const handleToggleBookMark = (id) => {
-        setUsers(
-            users.map((user) => {
-                if (user._id === id) {
-                    return { ...user, bookmark: !user.bookmark };
-                }
-                return user;
-            })
-        );
+        console.log(id);
     };
 
     const handleDelete = (id) => {
-        setUsers(users.filter((user) => user._id !== id));
+        console.log(id);
     };
 
     const handlePageChange = (pageIndex) => {
@@ -87,54 +74,43 @@ const UsersListPage = () => {
 
     return (
         <>
-            {loader ? (
-                <div className="position-absolute top-50 start-50 translate-middle">
-                    <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Загрузка...</span>
+            <div className="d-flex">
+                {professions && profLoading ? (
+                    <div className="alert alert-primary" role="alert">
+                        Загрузка...
                     </div>
-                </div>
-            ) : (
-                <div className="d-flex">
-                    {professions && profLoading ? (
-                        <div className="alert alert-primary" role="alert">
-                            Загрузка...
-                        </div>
-                    ) : (
-                        <div className="d-flex flex-column flex-shrink-0 p-3">
-                            <GroupList
-                                selectedItem={selectedProf}
-                                items={professions}
-                                onItemSelect={handleProfessionSelect}
-                                onClickClear={clearFilter}
-                            />
-                        </div>
-                    )}
-                    <div className="d-flex flex-column flex-grow-1 p-3">
-                        <SearchStatus
-                            users={count}
-                            selectedProf={selectedProf}
+                ) : (
+                    <div className="d-flex flex-column flex-shrink-0 p-3">
+                        <GroupList
+                            selectedItem={selectedProf}
+                            items={professions}
+                            onItemSelect={handleProfessionSelect}
+                            onClickClear={clearFilter}
                         />
-                        <SearchField value={search} onChange={handleSearch} />
-                        {count > 0 && (
-                            <UserTable
-                                users={userCrop}
-                                onDelete={handleDelete}
-                                onToggleBookMark={handleToggleBookMark}
-                                onSort={handleSort}
-                                selectedSort={sortBy}
-                            />
-                        )}
-                        <div className="d-flex justify-content-center">
-                            <Pagination
-                                itemsCount={count}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={handlePageChange}
-                            />
-                        </div>
+                    </div>
+                )}
+                <div className="d-flex flex-column flex-grow-1 p-3">
+                    <SearchStatus users={count} selectedProf={selectedProf} />
+                    <SearchField value={search} onChange={handleSearch} />
+                    {count > 0 && (
+                        <UserTable
+                            users={userCrop}
+                            onDelete={handleDelete}
+                            onToggleBookMark={handleToggleBookMark}
+                            onSort={handleSort}
+                            selectedSort={sortBy}
+                        />
+                    )}
+                    <div className="d-flex justify-content-center">
+                        <Pagination
+                            itemsCount={count}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
                     </div>
                 </div>
-            )}
+            </div>
         </>
     );
 };
