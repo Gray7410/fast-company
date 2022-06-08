@@ -16,10 +16,12 @@ const SelectField = ({
     const getInputClasses = () => {
         return "form-select" + (error ? " is-invalid" : "");
     };
+
     const optionsArray =
         !Array.isArray(options) && typeof options === "object"
             ? Object.values(options)
             : options;
+
     return (
         <div className="mb-4">
             <label htmlFor={name} className="form-label">
@@ -49,12 +51,12 @@ const SelectField = ({
 
 SelectField.propTypes = {
     defaultOption: PropTypes.string,
-    name: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    options: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    name: PropTypes.string
 };
 
 export default SelectField;
