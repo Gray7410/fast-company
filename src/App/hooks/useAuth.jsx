@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import localStorageService, {
     setTokens
 } from "../services/localStorage.service";
+import { useHistory } from "react-router-dom";
 
 export const httpAuth = axios.create({
     baseURL: "https://identitytoolkit.googleapis.com/v1/",
@@ -20,9 +21,16 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-    const [currentUser, setUser] = useState({});
+    const [currentUser, setUser] = useState();
     const [error, setError] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    const history = useHistory();
 
+    function logOut() {
+        localStorageService.removeAuthData();
+        setUser(null);
+        history.push("/");
+    }
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
@@ -41,6 +49,11 @@ const AuthProvider = ({ children }) => {
                 email,
                 rate: randomInt(1, 5),
                 completedMeetings: randomInt(0, 200),
+                image: `https://avatars.dicebear.com/api/avataaars/${(
+                    Math.random() + 1
+                )
+                    .toString(36)
+                    .substring(7)}.svg`,
                 ...rest
             });
         } catch (error) {
@@ -65,6 +78,7 @@ const AuthProvider = ({ children }) => {
                 returnSecureToken: true
             });
             setTokens(data);
+            await getUserData();
         } catch (error) {
             errorCatcher(error);
             console.log(error);
@@ -99,11 +113,15 @@ const AuthProvider = ({ children }) => {
             setUser(content);
         } catch (error) {
             errorCatcher(error);
+        } finally {
+            setLoading(false);
         }
     }
     useEffect(() => {
         if (localStorageService.getAccessToken()) {
             getUserData();
+        } else {
+            setLoading(false);
         }
     }, []);
     useEffect(() => {
@@ -117,9 +135,16 @@ const AuthProvider = ({ children }) => {
         const { message } = error.response.data;
         setError(message);
     }
+    console.log(isLoading);
     return (
-        <AuthContext.Provider value={{ signUp, signIn, currentUser }}>
-            {children}
+        <AuthContext.Provider value={{ signUp, signIn, currentUser, logOut }}>
+            {!isLoading ? (
+                children
+            ) : (
+                <div className="spinner-border text-secondary" role="status">
+                    <span className="visually-hidden">Загрузка...</span>
+                </div>
+            )}
         </AuthContext.Provider>
     );
 };
