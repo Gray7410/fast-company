@@ -36,6 +36,7 @@ export const ProfessionProvider = ({ children }) => {
             const { content } = await professionService.get();
             setProfessions(content);
             setLoading(false);
+            console.log(content);
         } catch (error) {
             errorCatcher(error);
         }
@@ -43,7 +44,11 @@ export const ProfessionProvider = ({ children }) => {
 
     return (
         <ProfessionContext.Provider
-            value={{ isLoading, professions, getProfession }}
+            value={{
+                isLoading,
+                professions,
+                getProfession
+            }}
         >
             {children}
         </ProfessionContext.Provider>
