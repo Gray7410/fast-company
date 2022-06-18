@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 import BookMark from "../common/bookmark";
 import Table from "../common/table";
 import Profession from "./profession";
-import Quality from "./quality";
+import Qualities from "./qualities";
 
 const UserTable = ({ users, selectedSort, onSort, onToggleBookMark }) => {
     const columns = {
         name: { path: "name", name: "Имя" },
         qualities: {
             name: "Качетва",
-            component: (user) => <Quality id={user.qualities} />
+            component: (user) => <Qualities qualities={user.qualities} />
         },
         professions: {
             name: "Профессия",
