@@ -27,6 +27,16 @@ export const QualityProvider = ({ children }) => {
     const getQuality = (id) => {
         return qualities.find((q) => q._id === id);
     };
+    const getUserQuality = (qualities) => {
+        qualities.map((qual) => {
+            const quality = getQuality(qual);
+            return {
+                value: quality._id,
+                label: quality.name,
+                color: quality.color
+            };
+        });
+    };
 
     useEffect(() => {
         const getQualities = async () => {
@@ -46,6 +56,7 @@ export const QualityProvider = ({ children }) => {
             value={{
                 qualities,
                 getQuality,
+                getUserQuality,
                 isLoading
             }}
         >
