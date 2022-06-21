@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { useHistory, useParams } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
@@ -9,62 +8,64 @@ import BackHistoryButton from "../../common/backButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfessions } from "../../../hooks/useProfession";
 import { useQualities } from "../../../hooks/useQualities";
+import { useHistory } from "react-router-dom";
 
 const EditUserPage = () => {
-    const { currentUser } = useAuth();
-    console.log(currentUser);
-    // const { userId } = useParams();
-    // const history = useHistory();
-    // console.log("history", history);
+    const history = useHistory();
+
+    const { currentUser, updateUserData } = useAuth();
 
     const { professions } = useProfessions();
-    // const profession = getProfession(currentUser.profession);
-    const professionsList = Object.keys(professions).map((professionName) => ({
-        label: professions[professionName].name,
-        value: professions[professionName]._id
+    const professionsList = professions.map((p) => ({
+        label: p.name,
+        value: p._id
     }));
 
-    const { qualities, getUserQuality } = useQualities();
-    // const quality = getUserQuality(currentUser.qualities);
-    // console.log("quality", quality);
-    console.log("qualities", qualities);
+    const { qualities, getQuality, isLoading } = useQualities();
+    console.log(isLoading);
+    const qualitiesList = qualities.map((q) => ({
+        value: q._id,
+        label: q.name,
+        color: q.color
+    }));
 
-    // const [isLoading, setIsLoading] = useState(false);
-    const [data, setData] = useState(currentUser);
-    const qualitiesList = getUserQuality(data.qualities);
-    console.log(qualitiesList);
+    console.log("QualitiesList", qualitiesList);
+    const userQualities = currentUser.qualities.map((q) => {
+        const qual = getQuality(q);
+        return {
+            value: qual._id,
+            label: qual.name
+        };
+    });
+    console.log("userQualities", userQualities);
 
-    // const qual = getUserQuality(data.qualities);
-    // console.log("qual", qual);
-    // const [professions, setProfession] = useState([]);
-    // const [qualities, setQualities] = useState([]);
+    const [data, setData] = useState({
+        name: currentUser.name,
+        email: currentUser.email,
+        profession: currentUser.profession,
+        sex: currentUser.sex,
+        qualities: userQualities
+    });
     const [errors, setErrors] = useState({});
-    // const getProfessionById = (id) => {
-    //     for (const prof of professions) {
-    //         if (prof.value === id) {
-    //             return { _id: prof.value, name: prof.label };
-    //         }
-    //     }
-    // };
-    // const getQualities = (elements) => {
-    //     const qualitiesArray = [];
-    //     for (const elem of elements) {
-    //         for (const quality in qualities) {
-    //             if (elem.value === qualities[quality].value) {
-    //                 qualitiesArray.push({
-    //                     _id: qualities[quality].value,
-    //                     name: qualities[quality].label,
-    //                     color: qualities[quality].color
-    //                 });
-    //             }
-    //         }
-    //     }
-    //     return qualitiesArray;
-    // };
+    console.log(data);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
-        if (!isValid) return null;
+        if (!isValid) return;
+        console.log(data);
+        const updatedData = {
+            ...currentUser,
+            ...data,
+            qualities: data.qualities.map((q) => q.value)
+        };
+        console.log("Updated data: ", updatedData);
+        try {
+            updateUserData(updatedData);
+            history.replace(`/users/${currentUser._id}`);
+        } catch (error) {
+            setErrors(error);
+        }
         // const { profession, qualities } = data;
         // api.users
         //     .update(userId, {
@@ -79,38 +80,6 @@ const EditUserPage = () => {
         //     qualities: getQualities(qualities)
         // });
     };
-    // const transformData = (data) => {
-    //     return data.map((qual) => ({ label: qual.name, value: qual._id }));
-    // };
-    // useEffect(() => {
-    //     setIsLoading(true);
-    //     api.users.getById(userId).then(({ profession, qualities, ...data }) =>
-    //         setData((prevState) => ({
-    //             ...prevState,
-    //             ...data,
-    //             qualities: transformData(qualities),
-    //             profession: profession._id
-    //         }))
-    //     );
-    //     api.professions.fetchAll().then((data) => {
-    //         const professionsList = Object.keys(data).map((professionName) => ({
-    //             label: data[professionName].name,
-    //             value: data[professionName]._id
-    //         }));
-    //         setProfession(professionsList);
-    //     });
-    //     api.qualities.fetchAll().then((data) => {
-    //         const qualitiesList = Object.keys(data).map((optionName) => ({
-    //             value: data[optionName]._id,
-    //             label: data[optionName].name,
-    //             color: data[optionName].color
-    //         }));
-    //         setQualities(qualitiesList);
-    //     });
-    // }, []);
-    // useEffect(() => {
-    //     if (data._id) setIsLoading(false);
-    // }, [data]);
 
     const validatorConfig = {
         email: {
@@ -123,7 +92,27 @@ const EditUserPage = () => {
         },
         name: {
             isRequired: {
-                message: "Введите ваше имя"
+                message: "Имя обязательно для заполнения"
+            }
+        },
+        password: {
+            isRequired: {
+                message: "Пароль обязателен для заполнения"
+            },
+            isCapitalSymbol: {
+                message: "Пароль должен содержать хотя бы одну заглавную букву"
+            },
+            isContainDigit: {
+                message: "Пароль должен содержать хотя бы одно число"
+            },
+            min: {
+                message: "Пароль должен состоять минимум из 8 символов",
+                value: 8
+            }
+        },
+        profession: {
+            isRequired: {
+                message: "Обязательно выберите вашу профессию"
             }
         }
     };
@@ -142,13 +131,12 @@ const EditUserPage = () => {
         return Object.keys(errors).length === 0;
     };
     const isValid = Object.keys(errors).length === 0;
-    console.log(data.qualities);
     return (
         <div className="container mt-5">
             <BackHistoryButton />
             <div className="row">
                 <div className="col-md-6 offset-md-3 shadow p-4">
-                    {data && qualitiesList && (
+                    {data && (
                         <form onSubmit={handleSubmit}>
                             <TextField
                                 label="Имя"
@@ -185,7 +173,7 @@ const EditUserPage = () => {
                                 label="Выберите ваш пол"
                             />
                             <MultiSelectField
-                                defaultValue={data.qualities}
+                                defaultValue={userQualities}
                                 options={qualitiesList}
                                 onChange={handleChange}
                                 name="qualities"
@@ -194,9 +182,9 @@ const EditUserPage = () => {
                             <button
                                 type="submit"
                                 disabled={!isValid}
-                                className="btn btn-primary w-100 mx-auto"
+                                className="btn btn-success w-100 mx-auto"
                             >
-                                Обновить
+                                Сохранить
                             </button>
                         </form>
                     )}

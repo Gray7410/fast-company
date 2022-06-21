@@ -41,7 +41,6 @@ export const CommentsProvider = ({ children }) => {
         try {
             const { content } = await commentService.getComments(userId);
             setComments(content);
-            console.log(content);
         } catch (error) {
             errorCatcher(error);
         } finally {
