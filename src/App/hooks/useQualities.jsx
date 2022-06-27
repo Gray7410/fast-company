@@ -21,6 +21,7 @@ export const QualityProvider = ({ children }) => {
     }, [error]);
 
     function errorCatcher(error) {
+        console.log(error);
         const { message } = error.response.data;
         setError(message);
     }
@@ -49,7 +50,7 @@ export const QualityProvider = ({ children }) => {
                 isLoading
             }}
         >
-            {children}
+            {!isLoading ? children : "Загрузка..."}
         </QualityContext.Provider>
     );
 };

@@ -2,23 +2,24 @@ import React, { useState, useEffect } from "react";
 import Pagination from "../../common/pagination";
 import { paginate } from "../../../utils/paginate";
 import GroupList from "../../common/groupList";
-import api from "../../../api";
 import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchField from "../../searchField";
 import { useUser } from "../../../hooks/useUsers";
+import { useProfessions } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UsersListPage = () => {
     const pageSize = 8;
+    const { professions, isLoading: professionLoading } = useProfessions();
     const [currentPage, setCurrentPage] = useState(1);
-    const [professions, setProfessions] = useState(api.professions.fetchAll());
     const [selectedProf, setSelectedProf] = useState();
-    const [profLoading, setProfLoading] = useState(true);
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const [search, setSearch] = useState("");
 
     const { users } = useUser();
+    const { currentUser } = useAuth();
 
     const handleToggleBookMark = (id) => {
         console.log(id);
@@ -31,12 +32,7 @@ const UsersListPage = () => {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => {
-            setProfessions(data);
-            setProfLoading(false);
-        });
-    }, []);
+
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedProf]);
@@ -49,11 +45,15 @@ const UsersListPage = () => {
         setSortBy(item);
     };
 
-    const filteredUsers = selectedProf
-        ? users.filter((user) => user.profession._id === selectedProf._id)
-        : users.filter((user) =>
-              user.name.toLowerCase().includes(search.toLowerCase())
-          );
+    function filterUsers(data) {
+        const filteredUsers = selectedProf
+            ? data.filter((user) => user.profession._id === selectedProf._id)
+            : data.filter((user) =>
+                  user.name.toLowerCase().includes(search.toLowerCase())
+              );
+        return filteredUsers.filter((u) => u._id !== currentUser._id);
+    }
+    const filteredUsers = filterUsers(users);
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
@@ -75,9 +75,12 @@ const UsersListPage = () => {
     return (
         <>
             <div className="d-flex">
-                {professions && profLoading ? (
-                    <div className="alert alert-primary" role="alert">
-                        Загрузка...
+                {professions && professionLoading ? (
+                    <div
+                        className="spinner-border text-secondary"
+                        role="status"
+                    >
+                        <span className="visually-hidden">Загрузка...</span>
                     </div>
                 ) : (
                     <div className="d-flex flex-column flex-shrink-0 p-3">
