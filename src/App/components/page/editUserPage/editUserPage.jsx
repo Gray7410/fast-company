@@ -7,8 +7,12 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfessions } from "../../../hooks/useProfession";
-import { useQualities } from "../../../hooks/useQualities";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from "../../../store/qualities";
 
 const EditUserPage = () => {
     const history = useHistory();
@@ -21,13 +25,17 @@ const EditUserPage = () => {
         value: p._id
     }));
 
-    const { qualities, getQuality, isLoading } = useQualities();
-    console.log(isLoading);
+    const qualities = useSelector(getQualities());
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
+    console.log(qualitiesLoading);
     const qualitiesList = qualities.map((q) => ({
         value: q._id,
         label: q.name,
         color: q.color
     }));
+    const getQuality = (id) => {
+        return qualities.find((q) => q._id === id);
+    };
 
     console.log("QualitiesList", qualitiesList);
     const userQualities = currentUser.qualities.map((q) => {
@@ -66,19 +74,6 @@ const EditUserPage = () => {
         } catch (error) {
             setErrors(error);
         }
-        // const { profession, qualities } = data;
-        // api.users
-        //     .update(userId, {
-        //         ...data,
-        //         profession: getProfessionById(profession),
-        //         qualities: getQualities(qualities)
-        //     })
-        //     .then((data) => history.push(`/users/${data._id}`));
-        // console.log({
-        //     ...data,
-        //     profession: getProfessionById(profession),
-        //     qualities: getQualities(qualities)
-        // });
     };
 
     const validatorConfig = {
