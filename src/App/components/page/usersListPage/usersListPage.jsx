@@ -6,10 +6,10 @@ import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchField from "../../searchField";
-import { useUser } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { getProfessions } from "../../../store/professions";
+import { getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     const pageSize = 8;
@@ -19,7 +19,7 @@ const UsersListPage = () => {
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const [search, setSearch] = useState("");
 
-    const { users } = useUser();
+    const users = useSelector(getUsersList());
     const { currentUser } = useAuth();
 
     const handleToggleBookMark = (id) => {

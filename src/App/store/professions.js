@@ -15,7 +15,7 @@ const professionsSlice = createSlice({
         },
         professionsReceved: (state, action) => {
             state.entities = action.payload;
-            state.lastFetch = Date.now;
+            state.lastFetch = Date.now();
             state.isLoading = false;
         },
         professionsRequestFailed: (state, action) => {
@@ -54,11 +54,7 @@ export const getProfessionsLoadingStatus = () => (state) =>
 
 export const getProfessionById = (professionId) => (state) => {
     if (state.professions.entities) {
-        for (const profession of state.professions.entities) {
-            if (profession._id === professionId) {
-                return profession;
-            }
-        }
+        return state.professions.entities.find((p) => p._id === professionId);
     }
 };
 
