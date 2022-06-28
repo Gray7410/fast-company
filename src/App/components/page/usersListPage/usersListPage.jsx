@@ -7,12 +7,13 @@ import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchField from "../../searchField";
 import { useUser } from "../../../hooks/useUsers";
-import { useProfessions } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getProfessions } from "../../../store/professions";
 
 const UsersListPage = () => {
     const pageSize = 8;
-    const { professions, isLoading: professionLoading } = useProfessions();
+    const professions = useSelector(getProfessions());
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
@@ -75,7 +76,7 @@ const UsersListPage = () => {
     return (
         <>
             <div className="d-flex">
-                {professions && professionLoading ? (
+                {!professions ? (
                     <div
                         className="spinner-border text-secondary"
                         role="status"
