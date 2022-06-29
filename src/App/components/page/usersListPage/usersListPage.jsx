@@ -6,10 +6,9 @@ import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchField from "../../searchField";
-import { useAuth } from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { getProfessions } from "../../../store/professions";
-import { getUsersList } from "../../../store/users";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     const pageSize = 8;
@@ -20,7 +19,7 @@ const UsersListPage = () => {
     const [search, setSearch] = useState("");
 
     const users = useSelector(getUsersList());
-    const { currentUser } = useAuth();
+    const currentUserId = useSelector(getCurrentUserId());
 
     const handleToggleBookMark = (id) => {
         console.log(id);
@@ -52,7 +51,7 @@ const UsersListPage = () => {
             : data.filter((user) =>
                   user.name.toLowerCase().includes(search.toLowerCase())
               );
-        return filteredUsers.filter((u) => u._id !== currentUser._id);
+        return filteredUsers.filter((u) => u._id !== currentUserId);
     }
     const filteredUsers = filterUsers(users);
     const count = filteredUsers.length;

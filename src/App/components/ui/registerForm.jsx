@@ -90,8 +90,7 @@ const RegisterForm = () => {
             ...data,
             qualities: data.qualities.map((q) => q.value)
         };
-        dispatch(signUp(data));
-        signUp(newData);
+        dispatch(signUp(newData));
     };
 
     const qualitiesList = qualities.map((q) => ({

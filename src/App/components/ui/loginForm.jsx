@@ -3,7 +3,8 @@ import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
 import CheckBoxField from "../common/form/checkBoxField";
 import { useDispatch } from "react-redux";
-import { logIn } from "../../store/users";
+import { login } from "../../store/users";
+import { useHistory } from "react-router-dom";
 
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const LoginForm = () => {
         password: "",
         stayOn: false
     });
+    const history = useHistory();
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -62,7 +64,7 @@ const LoginForm = () => {
         const redirect = history.location.state
             ? history.location.state.from.pathname
             : "/";
-        dispatch(logIn({ payload: data, redirect }));
+        dispatch(login({ payload: data, redirect }));
     };
     return (
         <form onSubmit={handleSubmit}>
