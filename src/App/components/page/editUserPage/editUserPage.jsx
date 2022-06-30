@@ -5,20 +5,13 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
-import { useAuth } from "../../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
-import {
-    getQualities,
-    getQualitiesLoadingStatus
-} from "../../../store/qualities";
+import { useDispatch, useSelector } from "react-redux";
+import { getQualities } from "../../../store/qualities";
 import { getProfessions } from "../../../store/professions";
-import { getCurrentUserData } from "../../../store/users";
+import { getCurrentUserData, updateUserData } from "../../../store/users";
 
 const EditUserPage = () => {
-    const history = useHistory();
-
-    const { updateUserData } = useAuth();
+    const dispatch = useDispatch();
     const currentUser = useSelector(getCurrentUserData());
     const professions = useSelector(getProfessions());
     const professionsList = professions.map((p) => ({
@@ -27,8 +20,6 @@ const EditUserPage = () => {
     }));
 
     const qualities = useSelector(getQualities());
-    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
-    console.log(qualitiesLoading);
     const qualitiesList = qualities.map((q) => ({
         value: q._id,
         label: q.name,
@@ -38,7 +29,6 @@ const EditUserPage = () => {
         return qualities.find((q) => q._id === id);
     };
 
-    console.log("QualitiesList", qualitiesList);
     const userQualities = currentUser.qualities.map((q) => {
         const qual = getQuality(q);
         return {
@@ -46,8 +36,6 @@ const EditUserPage = () => {
             label: qual.name
         };
     });
-    console.log("userQualities", userQualities);
-
     const [data, setData] = useState({
         name: currentUser.name,
         email: currentUser.email,
@@ -69,12 +57,7 @@ const EditUserPage = () => {
             qualities: data.qualities.map((q) => q.value)
         };
         console.log("Updated data: ", updatedData);
-        try {
-            updateUserData(updatedData);
-            history.replace(`/users/${currentUser._id}`);
-        } catch (error) {
-            setErrors(error);
-        }
+        dispatch(updateUserData(updatedData));
     };
 
     const validatorConfig = {

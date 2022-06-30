@@ -5,7 +5,7 @@ import { logOut } from "../store/users";
 const LogOut = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(logOut);
+        dispatch(logOut());
     }, []);
     return <h1>Загрузка</h1>;
 };
