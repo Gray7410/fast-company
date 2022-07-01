@@ -61,13 +61,10 @@ const usersSlice = createSlice({
             state.auth = null;
             state.dataLoaded = false;
         },
-        userUpdated: (state, action) => {
-            state.dataUpdated = true;
-            console.log(state.entities);
-            console.log(action.payload.content._id);
-        },
-        userUpdatedFailed: (state, action) => {
-            state.error = action.payload;
+        userUpdateSuccessed: (state, action) => {
+            state.entities[
+                state.entities.findIndex((u) => u._id === action.payload._id)
+            ] = action.payload;
         },
         authRequested: (state) => {
             state.error = null;
@@ -84,13 +81,14 @@ const {
     authRequestFailed,
     userCreated,
     userLoggedOut,
-    userUpdated,
-    userUpdatedFailed
+    userUpdateSuccessed
 } = actions;
 
 const authRequested = createAction("users/authRequested");
 const userCreateRequested = createAction("users/userCreateRequested");
 const createUserFailed = createAction("users/createUserFailed");
+const userUpdateRequested = createAction("users/userUpdateRequested");
+const userUpdateFailed = createAction("users/userUpdateFailed");
 
 export const login =
     ({ payload, redirect }) =>
@@ -146,12 +144,13 @@ export const logOut = () => (dispatch) => {
 };
 
 export const updateUserData = (payload) => async (dispatch) => {
+    dispatch(userUpdateRequested());
     try {
         const data = await userService.updateCurrentUser(payload);
-        dispatch(userUpdated(data));
+        dispatch(userUpdateSuccessed(data));
         history.push(`/users/${payload._id}`);
     } catch (error) {
-        dispatch(userUpdatedFailed());
+        dispatch(userUpdateFailed());
     }
 };
 
