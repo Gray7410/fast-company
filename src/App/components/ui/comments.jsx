@@ -1,16 +1,41 @@
 import { orderBy } from "lodash";
-import React from "react";
+import React, { useEffect } from "react";
+import { nanoid } from "nanoid";
 import CommentsList, { AddCommentForm } from "../common/comments";
-import { useComments } from "../../hooks/useComments";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    getComments,
+    getCommentsLoadingStatus,
+    loadCommentsList,
+    createComment,
+    removeComment
+} from "../../store/comments";
+import { useParams } from "react-router-dom";
+import { getCurrentUserId } from "../../store/users";
 
 const Comments = () => {
-    const { createComment, comments, removeComment } = useComments();
+    const { userId } = useParams();
+    const currentUserId = useSelector(getCurrentUserId());
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(loadCommentsList(userId));
+    }, [userId]);
+    const isLoading = useSelector(getCommentsLoadingStatus());
+
+    const comments = useSelector(getComments());
 
     const handleSubmit = (data) => {
-        createComment(data);
+        const commentData = {
+            ...data,
+            _id: nanoid(),
+            pageId: userId,
+            created_at: Date.now(),
+            userId: currentUserId
+        };
+        dispatch(createComment(commentData));
     };
     const handleRemoveComment = (id) => {
-        removeComment(id);
+        dispatch(removeComment(id));
     };
     const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
     return (
@@ -25,10 +50,14 @@ const Comments = () => {
                     <div className="card-body ">
                         <h2>Комментарии</h2>
                         <hr />
-                        <CommentsList
-                            comments={sortedComments}
-                            onRemove={handleRemoveComment}
-                        />
+                        {!isLoading ? (
+                            <CommentsList
+                                comments={sortedComments}
+                                onRemove={handleRemoveComment}
+                            />
+                        ) : (
+                            "Загрузка"
+                        )}
                     </div>
                 </div>
             )}

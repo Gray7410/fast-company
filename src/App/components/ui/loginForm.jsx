@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useAuth } from "../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthErrors, login } from "../../store/users";
 import { useHistory } from "react-router-dom";
 
 const LoginForm = () => {
-    const history = useHistory();
-    const { signIn } = useAuth();
+    const dispatch = useDispatch();
     const [data, setData] = useState({
         email: "",
         password: "",
         stayOn: false
     });
+    const loginError = useSelector(getAuthErrors());
+    const history = useHistory();
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -56,22 +58,14 @@ const LoginForm = () => {
 
     const isValid = Object.keys(errors).length === 0;
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return null;
-
-        try {
-            await signIn(data);
-            console.log(history.location.state.from.pathname);
-            history.push(
-                history.location.state
-                    ? history.location.state.from.pathname
-                    : "/"
-            );
-        } catch (error) {
-            setErrors(error);
-        }
+        const redirect = history.location.state
+            ? history.location.state.from.pathname
+            : "/";
+        dispatch(login({ payload: data, redirect }));
     };
     return (
         <form onSubmit={handleSubmit}>
@@ -97,6 +91,7 @@ const LoginForm = () => {
             >
                 Запомнить меня
             </CheckBoxField>
+            {loginError && <p className="text-danger">{loginError}</p>}
             <button
                 disabled={!isValid}
                 className="btn btn-primary w-100 mx-auto"

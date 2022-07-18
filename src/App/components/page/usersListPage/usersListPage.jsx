@@ -6,20 +6,20 @@ import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchField from "../../searchField";
-import { useUser } from "../../../hooks/useUsers";
-import { useProfessions } from "../../../hooks/useProfession";
-import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getProfessions } from "../../../store/professions";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     const pageSize = 8;
-    const { professions, isLoading: professionLoading } = useProfessions();
+    const professions = useSelector(getProfessions());
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const [search, setSearch] = useState("");
 
-    const { users } = useUser();
-    const { currentUser } = useAuth();
+    const users = useSelector(getUsersList());
+    const currentUserId = useSelector(getCurrentUserId());
 
     const handleToggleBookMark = (id) => {
         console.log(id);
@@ -51,7 +51,7 @@ const UsersListPage = () => {
             : data.filter((user) =>
                   user.name.toLowerCase().includes(search.toLowerCase())
               );
-        return filteredUsers.filter((u) => u._id !== currentUser._id);
+        return filteredUsers.filter((u) => u._id !== currentUserId);
     }
     const filteredUsers = filterUsers(users);
     const count = filteredUsers.length;
@@ -75,7 +75,7 @@ const UsersListPage = () => {
     return (
         <>
             <div className="d-flex">
-                {professions && professionLoading ? (
+                {!professions ? (
                     <div
                         className="spinner-border text-secondary"
                         role="status"

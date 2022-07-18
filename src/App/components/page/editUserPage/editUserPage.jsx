@@ -5,31 +5,30 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
-import { useAuth } from "../../../hooks/useAuth";
-import { useProfessions } from "../../../hooks/useProfession";
-import { useQualities } from "../../../hooks/useQualities";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getQualities } from "../../../store/qualities";
+import { getProfessions } from "../../../store/professions";
+import { getCurrentUserData, updateUserData } from "../../../store/users";
 
 const EditUserPage = () => {
-    const history = useHistory();
-
-    const { currentUser, updateUserData } = useAuth();
-
-    const { professions } = useProfessions();
+    const dispatch = useDispatch();
+    const currentUser = useSelector(getCurrentUserData());
+    const professions = useSelector(getProfessions());
     const professionsList = professions.map((p) => ({
         label: p.name,
         value: p._id
     }));
 
-    const { qualities, getQuality, isLoading } = useQualities();
-    console.log(isLoading);
+    const qualities = useSelector(getQualities());
     const qualitiesList = qualities.map((q) => ({
         value: q._id,
         label: q.name,
         color: q.color
     }));
+    const getQuality = (id) => {
+        return qualities.find((q) => q._id === id);
+    };
 
-    console.log("QualitiesList", qualitiesList);
     const userQualities = currentUser.qualities.map((q) => {
         const qual = getQuality(q);
         return {
@@ -37,8 +36,6 @@ const EditUserPage = () => {
             label: qual.name
         };
     });
-    console.log("userQualities", userQualities);
-
     const [data, setData] = useState({
         name: currentUser.name,
         email: currentUser.email,
@@ -60,25 +57,7 @@ const EditUserPage = () => {
             qualities: data.qualities.map((q) => q.value)
         };
         console.log("Updated data: ", updatedData);
-        try {
-            updateUserData(updatedData);
-            history.replace(`/users/${currentUser._id}`);
-        } catch (error) {
-            setErrors(error);
-        }
-        // const { profession, qualities } = data;
-        // api.users
-        //     .update(userId, {
-        //         ...data,
-        //         profession: getProfessionById(profession),
-        //         qualities: getQualities(qualities)
-        //     })
-        //     .then((data) => history.push(`/users/${data._id}`));
-        // console.log({
-        //     ...data,
-        //     profession: getProfessionById(profession),
-        //     qualities: getQualities(qualities)
-        // });
+        dispatch(updateUserData(updatedData));
     };
 
     const validatorConfig = {
