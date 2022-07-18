@@ -1,5 +1,5 @@
 const Profession = require("../models/Profession");
-const Qualities = require("../models/Qualities");
+const Quality = require("../models/Quality");
 const professionMock = require("../mock/professions.json");
 const qualitiesMock = require("../mock/qualities.json");
 
@@ -9,9 +9,9 @@ module.exports = async () => {
     await createInitialEntity(Profession, professionMock);
   }
 
-  const qualities = await Qualities.find();
-  if (qualities.length !== qualitiesMock.length) {
-    await createInitialEntity(Qualities, qualitiesMock);
+  const quality = await Quality.find();
+  if (quality.length !== qualitiesMock.length) {
+    await createInitialEntity(Quality, qualitiesMock);
   }
 };
 

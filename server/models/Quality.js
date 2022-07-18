@@ -16,4 +16,4 @@ const schema = new Schema(
   }
 );
 
-module.exports = model("Qualities", schema);
+module.exports = model("Quality", schema);
