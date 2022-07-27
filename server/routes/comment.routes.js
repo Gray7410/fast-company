@@ -22,7 +22,7 @@ router
         ...req.body,
         userId: req.user._id,
       });
-      res.status(201).json(newComment);
+      res.status(201).send(newComment);
     } catch (error) {
       res.status(500).json({
         message: "На сервере произошла ошибка. Попробуйте позже",
@@ -32,8 +32,8 @@ router
 
 router.delete("/:commentId", auth, async (req, res) => {
   try {
-    const { commentId } = req.mergeParams;
-    const removedComment = await Comment.findById({ commentId });
+    const { commentId } = req.params;
+    const removedComment = await Comment.findById(commentId);
 
     if (removedComment.userId.toString() === req.user._id) {
       await removedComment.remove();
