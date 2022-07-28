@@ -72,7 +72,10 @@ export const removeComment = (payload) => async (dispatch) => {
     dispatch(commentRemoveRequested());
     try {
         const { content } = await commentService.removeComment(payload);
-        dispatch(commentRemoved(content));
+        console.log(payload);
+        if (!content) {
+            dispatch(commentRemoved(payload));
+        }
     } catch (error) {
         dispatch(commentRemoveFailed(error.message));
     }
